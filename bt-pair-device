@@ -1,0 +1,55 @@
+#!/bin/bash
+
+# This can be replaced by desired default value.
+DEVICE_NAME=${1:-"MX Master 3"}
+
+################################################################################################
+# Countdown to allow user to set device into pairing mode.
+DEVICE_SETUP_COUNTDOWN=$((5))
+while [ $DEVICE_SETUP_COUNTDOWN -gt -1 ]; do
+   echo -ne "Ensure $DEVICE_NAME is in pairing mode in: $DEVICE_SETUP_COUNTDOWN\033[0K\r"
+   sleep 1
+   : $((DEVICE_SETUP_COUNTDOWN--))
+done
+################################################################################################
+
+
+
+################################################################################################
+# Find MAC Address, given device name. Untested for multiple devices with the same name.
+echo; sleep 1; echo "Attempting to find $DEVICE_NAME..."
+
+PAIRING_MODE_TIMEOUT=$((5))
+echo "Searching for MAC Address for $PAIRING_MODE_TIMEOUT seconds..."
+MAC_ADDRESS=$(
+  stdbuf -oL timeout $((PAIRING_MODE_TIMEOUT)) bluetoothctl --agent NoInputNoOutput scan on |
+  {
+    while IFS= read -r line
+    do
+      echo "$line"
+    done
+  } | tee /dev/tty | grep "$DEVICE_NAME" | awk '{print $3}'
+)
+################################################################################################
+
+
+
+################################################################################################
+# Exit if device was not found. Trust and connect if found.
+if [ ! $MAC_ADDRESS ]
+then
+   echo "Unable to find MAC Address for Device: $DEVICE_NAME"
+   exit 1
+fi
+
+echo "Found MAC Address [$MAC_ADDRESS] for Device: $DEVICE_NAME"
+
+# NoInputNoOutput agent does not work on my machine (hence the 'Note' below), but may work for others.
+bluetoothctl --agent NoInputNoOutput trust $MAC_ADDRESS &&
+bluetoothctl --agent NoInputNoOutput connect $MAC_ADDRESS &&
+
+echo; echo -e "Pairing request may have been sent...\nNote: To accept a mouse pairing request using a keyboard (Linux Mint 21 Cinnamon), you may need to \"Allow\" pairing. This may come as a notification, which can be accessed using `Super + N`."
+################################################################################################
+
+
+echo; echo "Press Enter to exit..."; read x
