@@ -1,0 +1,11 @@
+#!/bin/bash
+
+sudo apt update && sudo apt upgrade -y
+
+# If there is an error, keep the terminal open
+if [ $? -gt 0 ]
+then
+  echo; echo Error upgrading packages. Err code: $?; read x
+fi
+
+# TODO: autoremove?
