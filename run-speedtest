@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# https://www.speedtest.net/apps/cli
+
+speedtest
+echo; echo "Press Enter to exit..."; read x
