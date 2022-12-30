@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# This is configured to toggle between one and two monitors, with my default alignment. Needs to be modified to support any other configurations.
+
+NUM_MONITORS=$(($(xrandr --listactivemonitors | wc -l)-1))
+
+echo \[$NUM_MONITORS monitor\(s\) detected\]
+
+if [ $NUM_MONITORS -gt 1 ]
+then
+  # Toggle to primary only
+  echo Displaying primary only...
+  sleep 1
+  # Ensure right is enabled and primary
+  xrandr --output DP-1 --primary --auto
+  # Turn left off
+  xrandr --output HDMI-1 --off
+
+else
+  # Toggle to extend monitors
+  echo Extending to all monitors...
+  sleep 1
+  # Re-enable left
+  xrandr --output HDMI-1 --auto
+  # Extend to left
+  xrandr --output DP-1 --primary --right-of HDMI-1
+
+fi
+
+sleep 3
+
+exit
