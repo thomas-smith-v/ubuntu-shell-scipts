@@ -48,7 +48,7 @@ echo "Found MAC Address [$MAC_ADDRESS] for Device: $DEVICE_NAME"
 bluetoothctl --agent NoInputNoOutput trust $MAC_ADDRESS &&
 bluetoothctl --agent NoInputNoOutput connect $MAC_ADDRESS &&
 
-echo; echo -e "Pairing request may have been sent...\nNote: To accept a mouse pairing request using a keyboard (Linux Mint 21 Cinnamon), you may need to \"Allow\" pairing. This may come as a notification, which can be accessed using `Super + N`."
+echo; echo -e "Pairing request may have been sent...\nNote: To accept a mouse pairing request using a keyboard (Linux Mint 21 Cinnamon), you may need to \"Allow\" pairing. This may come as a notification, which can be accessed using \`Super + N\`."
 ################################################################################################
 
 
